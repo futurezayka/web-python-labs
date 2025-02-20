@@ -1,5 +1,6 @@
 from pydantic import Field
 
+from app.core.config.auth import AuthConfig
 from app.core.config.base import BaseConfig
 from app.core.config.db import DataBaseConfig
 
@@ -12,6 +13,7 @@ class Settings(BaseConfig):
     RELOAD: bool = Field(False, alias="RELOAD")
 
     db: DataBaseConfig = DataBaseConfig()
+    auth: AuthConfig = AuthConfig()
 
 
 settings = Settings()
