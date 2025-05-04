@@ -1,9 +1,10 @@
 from pydantic import BaseModel
+from app.schemas.base import IdBase
 
 __all__ = ["Author", "GetAuthorsResponse", "CreateAuthorResponse", "CreateAuthorRequest"]
 
 
-class Author(BaseModel):
+class Author(IdBase):
     name: str
     pseudonym: str
 

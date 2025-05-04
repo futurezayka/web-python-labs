@@ -1,8 +1,23 @@
+import functools
+
+from bson import CodecOptions, UuidRepresentation
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
-import os
 
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://admin:password@mongodb:27017")
-MONGO_DB_NAME = os.getenv("MONGO_DB_NAME", "mydatabase")
+from app.core import settings
 
-client = AsyncIOMotorClient(MONGO_URI)
-database: AsyncIOMotorDatabase = client[MONGO_DB_NAME]
+__all__ = ["get_mongo_client", "get_mongo_database"]
+
+
+@functools.lru_cache
+def get_mongo_client() -> AsyncIOMotorClient:
+    return AsyncIOMotorClient(
+        settings.mongo.url,
+    )
+
+
+@functools.lru_cache
+def get_mongo_database() -> AsyncIOMotorDatabase:
+    client = get_mongo_client()
+    return client.get_database(
+        settings.mongo.DB, codec_options=CodecOptions(uuid_representation=UuidRepresentation.PYTHON_LEGACY)
+    )

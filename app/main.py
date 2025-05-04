@@ -33,6 +33,7 @@ def create_app() -> FastAPI:
 
     _include_router(app)
     _add_middleware(app)
+    _add_handlers(app)
 
     return app
 

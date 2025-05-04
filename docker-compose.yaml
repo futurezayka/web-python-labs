@@ -11,15 +11,20 @@ services:
       - labs-web-network
     ports:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+
   mongodb:
     image: mongo:latest
     container_name: mongodb
     restart: always
+    env_file:
+      - .env
     ports:
-      - "27017:27017"
+      - "${MONGO_PORT}:${MONGO_PORT}"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    networks:
+      - labs-web-network
     volumes:
       - mongo_data:/data/db
 

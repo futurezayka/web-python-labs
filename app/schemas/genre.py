@@ -1,9 +1,10 @@
 from pydantic import BaseModel
+from app.schemas.base import IdBase
 
 __all__ = ["Genre", "GetGenresResponse", "CreateGenreRequest", "CreateGenreResponse"]
 
 
-class Genre(BaseModel):
+class Genre(IdBase):
     name: str
 
 

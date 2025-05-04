@@ -3,6 +3,7 @@ from pydantic import Field
 from app.core.config.auth import AuthConfig
 from app.core.config.base import BaseConfig
 from app.core.config.db import DataBaseConfig
+from app.core.config.mongo import MongoDbConfig
 
 __all__ = ["Settings", "settings"]
 
@@ -14,6 +15,7 @@ class Settings(BaseConfig):
 
     db: DataBaseConfig = DataBaseConfig()
     auth: AuthConfig = AuthConfig()
+    mongo: MongoDbConfig = MongoDbConfig()
 
 
 settings = Settings()

@@ -1,8 +1,11 @@
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Any
+from uuid import uuid4
+
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 T = TypeVar("T")
+
 
 class AbstractRepositoryMixin(ABC, Generic[T]):
     collection_name: str
@@ -31,10 +34,11 @@ class AbstractRepositoryMixin(ABC, Generic[T]):
     async def delete(self, filters: dict[str, Any]) -> None:
         pass
 
+
 class RepositoryMixin(AbstractRepositoryMixin[T]):
     async def create(self, obj_in: dict[str, Any]) -> Any:
-        result = await self._collection.insert_one(obj_in)
-        return await self._collection.find_one({"_id": result.inserted_id})
+        obj_in["_id"] = str(uuid4())
+        await self._collection.insert_one(obj_in)
 
     async def get(self, filters: dict[str, Any]) -> Any:
         return await self._collection.find_one(filters)
@@ -48,4 +52,6 @@ class RepositoryMixin(AbstractRepositoryMixin[T]):
         return await self.get(filters)
 
     async def delete(self, filters: dict[str, Any]) -> None:
+        if filters.get("id"):
+            filters["_id"] = str(filters.pop("id"))
         await self._collection.delete_one(filters)
