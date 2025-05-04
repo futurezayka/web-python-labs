@@ -1,0 +1,8 @@
+.pre-commit-config.yaml
+docker-compose.yml
+.flake8
+.env.docker
+README.md
+.github
+wp-dump
+Makefile
