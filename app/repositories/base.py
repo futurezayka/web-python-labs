@@ -81,6 +81,9 @@ class AbstractRepositoryMixin(ABC, Generic[T]):
 
 class RepositoryMixin(AbstractRepositoryMixin[T]):
     async def create(self, obj_in: dict[str, any]) -> T:
+        if obj_in.get("_id"):
+            obj_in["id"] = obj_in.pop("_id")
+
         obj = self.model(**obj_in)
         async with self._session as session:
             try:
@@ -213,6 +216,8 @@ class RepositoryMixin(AbstractRepositoryMixin[T]):
             return result.rowcount or 0
 
     async def delete(self, filters: dict[str, any]) -> None:
+        if filters.get("_id"):
+            filters["id"] = filters.pop("_id")
         async with self._session as session:
             query = select(self.model).where(and_(*[getattr(self.model, k) == v for k, v in filters.items()]))
             result = await session.execute(query)
