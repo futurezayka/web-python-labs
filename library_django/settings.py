@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 import os
 from pathlib import Path
+import logging
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,6 +31,24 @@ DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
 # Application definition
+
+# Logging configuration
+logger = logging.getLogger(__name__)
+logger.warning("This is a test warning log from Django!")
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
+}
 
 INSTALLED_APPS = [
     "django.contrib.admin",

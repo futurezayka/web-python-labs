@@ -8,11 +8,18 @@ services:
     networks:
       - django-library
     volumes:
-    - ./:/app/
+      - ./:/app/
     env_file:
       - .env
     depends_on:
       - postgres
+      - fluentd
+
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: 0.0.0.0:24224
+        tag: django.app
 
   postgres:
     image: postgres:17.0-alpine3.20
@@ -25,6 +32,54 @@ services:
       - pg_data:/var/lib/postgresql/data
     ports:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.28
+    container_name: elasticsearch
+    hostname: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9200/_cluster/health" ]
+      interval: 10s
+      retries: 10
+      timeout: 5s
+    networks:
+      - django-library
+    ports:
+      - 9200:9200
+
+  fluentd:
+    build: ./fluentd
+    container_name: fluentd
+    volumes:
+      - ./fluentd/conf:/fluentd/etc
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - django-library
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.28
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - django-library
+    ports:
+      - "5601:5601"
 
 volumes:
   pg_data:
