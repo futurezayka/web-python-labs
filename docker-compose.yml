@@ -8,11 +8,12 @@ services:
     networks:
       - django-library
     volumes:
-    - ./:/app/
+      - ./:/app/
     env_file:
       - .env
     depends_on:
       - postgres
+    restart: unless-stopped
 
   postgres:
     image: postgres:17.0-alpine3.20
@@ -26,8 +27,35 @@ services:
     ports:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
 
+  prometheus:
+    image: prom/prometheus
+    restart: 'no'
+    volumes:
+      - prometheus_data:/prometheus
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - django-library
+
+  grafana:
+    image: grafana/grafana
+    environment:
+      GF_INSTALL_PLUGINS: "grafana-clock-panel,grafana-simple-json-datasource"
+    restart: 'no'
+    volumes:
+      - grafana_data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - django-library
+
 volumes:
-  pg_data:
+  pg_data: {}
+  prometheus_data: {}
+  grafana_data: {}
 
 networks:
   django-library:

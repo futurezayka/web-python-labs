@@ -15,6 +15,6 @@ RUN poetry config virtualenvs.create false \
 
 COPY . .
 
-EXPOSE 8000
+EXPOSE 8000 9187
 
 CMD ["./app-start.sh"]
