@@ -9,7 +9,7 @@ DATABASES = {
         "HOST": os.environ.get("POSTGRES_HOST"),
         "PORT": os.environ.get("POSTGRES_PORT"),
         "OPTIONS": {
-            "options": "-c search_path=django_library_schema",
+            "options": f"-c search_path={os.environ.get('POSTGRES_SCHEMA', 'public')}",
         },
     },
 }
