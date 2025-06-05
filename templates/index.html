@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Flask Lab</title>
+    </head>
+    <body>
+        <a href="/author">Authors</a>
+        <a href="/book">Books</a>
+        <a href="/genre">Genres</a>
+        {% if current_user.is_authenticated %}
+            <a href="/logout">Logout</a>
+        {% else %}
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+        {% endif %}
+    </body>
+</html>

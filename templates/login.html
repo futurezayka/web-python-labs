@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Login</title>
+    </head>
+    <body>
+        <a href="/">Main</a>
+        <form action="" method="post">
+            {% for field in form%}
+            <p>{{ field.label() }}</p>
+            <p>{{ field }}</p>
+            {% endfor %}
+        </form>
+        <a href="/register">Register</a>
+    </body>
+</html>

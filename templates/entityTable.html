@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>List</title>
+    </head>
+    <body>
+        <a href="/">Main</a>
+        <table border="2">
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+            </tr>
+            {% if entities%}
+            {% for entity in entities %}
+                <tr>
+                    <td>{{entity.id}}</td>
+                    <td><a href="/{{entity.__tablename__}}/{{entity.id}}">{{entity.name}}</a></td>
+                </tr>
+            {% endfor%}
+            {% endif %}
+            {% if current_user.is_authenticated %}
+                <a href="{{ request.path }}/create">Create</a>
+            {% endif %}
+        </table>
+    </body>
+</html>
